@@ -104,4 +104,5 @@ function getRandomIcon() {
  */
 function randomDuration() {
     return Math.floor(Math.random() * 10) / 100;
+
 }
