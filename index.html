@@ -19,18 +19,65 @@ background-image:url("items/fundo.jpg");
 background-size:cover;
 background-position:center;
 font-family:Arial;
+color:white;
 }
+
+/* PAINEL SUPERIOR */
 
 #painel{
 text-align:center;
-color:white;
-font-size:22px;
+margin-bottom:20px;
+}
+
+/* USUARIO */
+
+#usuario{
+font-size:28px;
+font-weight:bold;
+margin-bottom:10px;
+}
+
+/* SALDO */
+
+#saldoBox{
+font-size:40px;
+font-weight:bold;
+color:#00ff88;
 margin-bottom:15px;
 }
 
-#saldo{
+/* APOSTA */
+
+#apostaBox{
+font-size:26px;
+}
+
+#aposta{
+font-size:26px;
+width:120px;
+text-align:center;
+border-radius:8px;
+border:none;
+padding:5px;
+}
+
+/* BOTÃO */
+
+.start-button{
+margin-top:25px;
+padding:25px 90px;
+font-size:32px;
 font-weight:bold;
-color:#00ff88;
+border:none;
+border-radius:12px;
+cursor:pointer;
+color:white;
+background:linear-gradient(45deg,#ff0000,#ff8800);
+box-shadow:0 0 20px rgba(0,0,0,0.7);
+}
+
+.start-button:hover{
+transform:scale(1.1);
 }
 
 </style>
@@ -42,11 +89,20 @@ color:#00ff88;
 <div>
 
 <div id="painel">
-💰 Saldo: R$ <span id="saldo">{{saldo}}</span>
-<br><br>
 
-Aposta:
-<input type="number" id="aposta" value="1" min="1" style="font-size:18px;width:80px;">
+<div id="usuario">
+👤 Olá, {{usuario}}
+</div>
+
+<div id="saldoBox">
+💰 Saldo: R$ <span id="saldo">{{saldo}}</span>
+</div>
+
+<div id="apostaBox">
+🎲 Aposta:
+<input type="number" id="aposta" value="1" min="1">
+</div>
+
 </div>
 
 
@@ -81,24 +137,17 @@ Aposta:
 
 </div>
 
-<!-- SOM DO GIRO -->
-<audio id="somGiro" src="/static/som/girar.mp3"></audio>
+<audio id="somGiro" src="som/girar.mp3"></audio>
 
 <script>
-
-/* função que substitui spin() */
 
 function girar(botao){
 
 let aposta = document.getElementById("aposta").value
 
-/* tocar som */
-
 let audio = document.getElementById("somGiro")
 audio.currentTime = 0
 audio.play()
-
-/* chama backend */
 
 fetch("/api/spin",{
 method:"POST",
@@ -113,8 +162,6 @@ aposta:aposta
 .then(data => {
 
 setResult(data.resultado)
-
-/* atualizar saldo */
 
 document.getElementById("saldo").innerText = data.saldo
 
@@ -132,5 +179,3 @@ spin(botao)
 
 </body>
 </html>
-
-
