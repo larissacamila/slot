@@ -1,58 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Sloty</title>
+<title>🍓 Slot Frutas</title>
 
-<link rel="stylesheet" href="./style.css">
-<script src="./script.js" defer></script>
+<link rel="stylesheet" href="/static/style.css">
+<script src="/static/script.js" defer></script>
 
 <style>
 
 body{
-    margin:0;
-    padding:0;
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    /* IMAGEM DE FUNDO */
-    background-image:url("items/fundo.jpg");
-    background-size:cover;
-    background-position:center;
-    background-repeat:no-repeat;
+margin:0;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background-image:url("items/fundo.jpg");
+background-size:cover;
+background-position:center;
+font-family:Arial;
 }
 
-/* container central */
-#container{
-    text-align:center;
+#painel{
+text-align:center;
+color:white;
+font-size:22px;
+margin-bottom:15px;
 }
 
-/* BOTÃO SPIN GRANDE */
-.start-button{
-    margin-top:20px;
-    padding:20px 60px;
-    font-size:28px;
-    font-weight:bold;
-    border:none;
-    border-radius:15px;
-    cursor:pointer;
-
-    color:white;
-    background:linear-gradient(45deg,#ff0000,#ff8800);
-
-    box-shadow:0 0 20px rgba(0,0,0,0.5);
-
-    transition:0.2s;
-}
-
-.start-button:hover{
-    transform:scale(1.1);
-}
-
-.start-button:active{
-    transform:scale(0.95);
+#saldo{
+font-weight:bold;
+color:#00ff88;
 }
 
 </style>
@@ -60,6 +38,17 @@ body{
 </head>
 
 <body>
+
+<div>
+
+<div id="painel">
+💰 Saldo: R$ <span id="saldo">{{saldo}}</span>
+<br><br>
+
+Aposta:
+<input type="number" id="aposta" value="1" min="1" style="font-size:18px;width:80px;">
+</div>
+
 
 <div id="container">
 
@@ -86,10 +75,60 @@ body{
 </div>
 </div>
 
-<input type="button" onclick="spin(this)" class="start-button" value="🎰 GIRAR"/>
+<input type="button" onclick="girar(this)" class="start-button" value="🎰 GIRAR">
 
 </div>
 
+</div>
+
+<!-- SOM DO GIRO -->
+<audio id="somGiro" src="/static/som/girar.mp3"></audio>
+
+<script>
+
+/* função que substitui spin() */
+
+function girar(botao){
+
+let aposta = document.getElementById("aposta").value
+
+/* tocar som */
+
+let audio = document.getElementById("somGiro")
+audio.currentTime = 0
+audio.play()
+
+/* chama backend */
+
+fetch("/api/spin",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+aposta:aposta
+})
+})
+.then(res => res.json())
+.then(data => {
+
+setResult(data.resultado)
+
+/* atualizar saldo */
+
+document.getElementById("saldo").innerText = data.saldo
+
+if(data.ganho > 0){
+alert("🎉 Você ganhou R$ "+data.ganho)
+}
+
+})
+
+spin(botao)
+
+}
+
+</script>
+
 </body>
 </html>
-
